@@ -1,76 +1,41 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const HomePage = () => {
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-6 text-2xl font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Website V2
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A social media platform for capturing public sentiment through AI-generated questions from news events.
+            Privacy-focused news discussions and community insights
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                📰 News Ingestion
-              </CardTitle>
-              <CardDescription>
-                AI-powered clustering of news articles into events with neutral question generation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Coming in future steps: Epic B implementation
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                📊 Stance Capture
-              </CardTitle>
-              <CardDescription>
-                Express opinions on a -2 to +2 scale with optional reasoning
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Coming in future steps: Epic D implementation
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                🌐 Community Pulse
-              </CardTitle>
-              <CardDescription>
-                Aggregated insights and trends from community responses
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Coming in future steps: Epic F implementation
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground">
-            Step 0 Complete: Project scaffolding and foundation ready
-          </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a 
+            href="/auth/signup" 
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+          >
+            Sign Up
+          </a>
+          <a 
+            href="/settings/profile" 
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+          >
+            Profile Settings
+          </a>
+          <a 
+            href="/ops/aq-preview" 
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+          >
+            AQ Preview (Dev)
+          </a>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default HomePage;
