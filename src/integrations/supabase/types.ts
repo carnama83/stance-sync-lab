@@ -14,13 +14,169 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string
+          country: string
+          country_iso: string
+          created_at: string | null
+          display_handle: string
+          dob: string
+          id: string
+          random_id: string
+          state: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          city: string
+          country: string
+          country_iso: string
+          created_at?: string | null
+          display_handle: string
+          dob: string
+          id: string
+          random_id: string
+          state: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string
+          country?: string
+          country_iso?: string
+          created_at?: string | null
+          display_handle?: string
+          dob?: string
+          id?: string
+          random_id?: string
+          state?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          created_at: string | null
+          id: string
+          language: string | null
+          source_links: Json | null
+          story_id: string | null
+          summary: string | null
+          title: string | null
+          topic: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          source_links?: Json | null
+          story_id?: string | null
+          summary?: string | null
+          title?: string | null
+          topic?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          source_links?: Json | null
+          story_id?: string | null
+          summary?: string | null
+          title?: string | null
+          topic?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "story_clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_clusters: {
+        Row: {
+          created_at: string | null
+          id: string
+          language: string | null
+          primary_sources: Json | null
+          summary: string | null
+          title: string | null
+          topic: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          primary_sources?: Json | null
+          summary?: string | null
+          title?: string | null
+          topic?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          primary_sources?: Json | null
+          summary?: string | null
+          title?: string | null
+          topic?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          country: string | null
+          country_iso: string | null
+          display_handle: string | null
+          id: string | null
+          random_id: string | null
+          state: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          country_iso?: string | null
+          display_handle?: string | null
+          id?: string | null
+          random_id?: string | null
+          state?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          country_iso?: string | null
+          display_handle?: string | null
+          id?: string | null
+          random_id?: string | null
+          state?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      gen_urlsafe_id: {
+        Args: { n?: number }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
