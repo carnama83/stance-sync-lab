@@ -5,7 +5,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-bold mb-6 text-2xl font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Website V2
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
