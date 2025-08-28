@@ -6,6 +6,8 @@ import Profile from "@/pages/settings/Profile";
 import AQPreview from "@/pages/ops/AQPreview";
 import Feed from "@/pages/feed/Feed";
 import QuestionDetail from "@/pages/question/QuestionDetail";
+import Analytics from "@/pages/me/Analytics";
+import Pulse from "@/pages/pulse/Pulse";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
   {
     path: "/question/:id",
     element: <QuestionDetail />,
+  },
+  {
+    path: "/me/analytics",
+    element: <Analytics />,
+  },
+  {
+    path: "/pulse",
+    element: <Pulse />,
   },
   {
     path: "*",

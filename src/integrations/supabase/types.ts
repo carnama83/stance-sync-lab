@@ -306,6 +306,16 @@ export type Database = {
         Args: { n?: number }
         Returns: string
       }
+      rpc_stances_with_location: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          city: string
+          country_iso: string
+          question_id: string
+          score: number
+          state: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

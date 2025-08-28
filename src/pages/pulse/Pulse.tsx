@@ -1,0 +1,399 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, Settings } from 'lucide-react';
+import { 
+  getCommunityPulseData, 
+  triggerAggregation,
+  type RegionScope,
+  histogramToDistribution 
+} from '@/features/analytics/aggregates';
+
+const Pulse = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [scope, setScope] = useState<RegionScope>('global');
+  const [pulseData, setPulseData] = useState<any>(null);
+  const [showDevControls, setShowDevControls] = useState(false);
+  const [devKey, setDevKey] = useState('');
+  const [aggregating, setAggregating] = useState(false);
+  const [trendPeriod, setTrendPeriod] = useState<'7d' | '30d'>('7d');
+
+  useEffect(() => {
+    loadPulseData();
+  }, [scope]);
+
+  const loadPulseData = async () => {
+    setLoading(true);
+    try {
+      // For demo purposes, we'll use global scope initially
+      // In a real implementation, you'd get user's location from their profile
+      const data = await getCommunityPulseData(scope);
+      setPulseData(data);
+    } catch (error) {
+      console.error('Error loading pulse data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load community pulse data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTriggerAggregation = async () => {
+    if (!devKey.trim()) {
+      toast({
+        title: "Dev Key Required",
+        description: "Please enter a valid dev key",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setAggregating(true);
+    try {
+      const result = await triggerAggregation(devKey);
+      if (result.success) {
+        toast({
+          title: "Aggregation Complete",
+          description: result.message,
+        });
+        await loadPulseData(); // Refresh data
+      } else {
+        toast({
+          title: "Aggregation Failed",
+          description: result.message,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to trigger aggregation",
+        variant: "destructive"
+      });
+    } finally {
+      setAggregating(false);
+    }
+  };
+
+  const getTrendIcon = (change: number) => {
+    if (change > 0) return <TrendingUp className="h-4 w-4 text-green-600" />;
+    if (change < 0) return <TrendingDown className="h-4 w-4 text-red-600" />;
+    return <Minus className="h-4 w-4 text-gray-500" />;
+  };
+
+  const formatPercentage = (value: number) => {
+    const absValue = Math.abs(value);
+    const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+    return `${sign}${absValue.toFixed(1)}%`;
+  };
+
+  const getConfidenceColor = (confidence: string) => {
+    switch (confidence) {
+      case 'high': return 'default';
+      case 'medium': return 'secondary';
+      case 'low': return 'destructive';
+      default: return 'outline';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading community pulse...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="mr-4"
+            aria-label="Go back to home"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-3xl font-bold">Community Pulse</h1>
+        </div>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowDevControls(!showDevControls)}
+          aria-label="Toggle developer controls"
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Dev Controls */}
+      {showDevControls && (
+        <Card className="mb-6 border-yellow-200 bg-yellow-50">
+          <CardHeader>
+            <CardTitle className="text-sm">Developer Controls</CardTitle>
+            <CardDescription>
+              Trigger manual aggregation for testing purposes
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="devKey">Dev Key</Label>
+              <Input
+                id="devKey"
+                type="password"
+                value={devKey}
+                onChange={(e) => setDevKey(e.target.value)}
+                placeholder="Enter dev key..."
+              />
+            </div>
+            <Button 
+              onClick={handleTriggerAggregation}
+              disabled={aggregating}
+              size="sm"
+            >
+              {aggregating ? 'Aggregating...' : 'Trigger Aggregation'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Region Selector */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Region Selection</CardTitle>
+          <CardDescription>
+            Choose the geographic scope for community data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex-1 min-w-48">
+              <Label htmlFor="scope-select">Geographic Scope</Label>
+              <Select value={scope} onValueChange={(value) => setScope(value as RegionScope)}>
+                <SelectTrigger id="scope-select">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="global">Global</SelectItem>
+                  <SelectItem value="country">My Country</SelectItem>
+                  <SelectItem value="state">My State</SelectItem>
+                  <SelectItem value="city">My City</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Placeholder for region comparison toggle */}
+            <div className="flex-1 min-w-48">
+              <Label>Compare Regions</Label>
+              <div className="p-2 border rounded-md bg-muted/50">
+                <Badge variant="outline">Coming Soon</Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {!pulseData || pulseData.totalSampleSize === 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>No Data Available</CardTitle>
+            <CardDescription>
+              No community data available for the selected region. Try a broader scope or check back later.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : (
+        <>
+          {/* Summary Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Sample Size</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{pulseData.totalSampleSize}</div>
+                <Badge 
+                  variant={getConfidenceColor(pulseData.confidence)}
+                  className="mt-2"
+                >
+                  {pulseData.confidence} confidence
+                </Badge>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  7-Day Trend
+                  {getTrendIcon(pulseData.weeklyChange)}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatPercentage(pulseData.weeklyChange)}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  vs previous week
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  30-Day Trend
+                  {getTrendIcon(pulseData.monthlyChange)}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatPercentage(pulseData.monthlyChange)}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  vs previous month
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Scope</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold capitalize">
+                  {scope}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Current region
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Distribution Chart */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Opinion Distribution</CardTitle>
+              <CardDescription>
+                How the community is distributed across stance scores (-2 to +2)
+                {pulseData.confidence === 'low' && (
+                  <span className="text-amber-600 ml-2">(Low sample size - interpret with caution)</span>
+                )}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 w-full" role="img" aria-label="Bar chart showing distribution of community opinions">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={pulseData.distribution}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="label" 
+                      tick={{ fontSize: 12 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                    />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} responses`, 'Count']}
+                    />
+                    <Bar 
+                      dataKey="count" 
+                      fill="hsl(var(--primary))"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                Distribution shows aggregated responses across all recent questions. Sample size: {pulseData.totalSampleSize}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trend Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Macro Trends
+                <div className="flex gap-2">
+                  <Button
+                    variant={trendPeriod === '7d' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTrendPeriod('7d')}
+                  >
+                    7 Days
+                  </Button>
+                  <Button
+                    variant={trendPeriod === '30d' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTrendPeriod('30d')}
+                  >
+                    30 Days
+                  </Button>
+                </div>
+              </CardTitle>
+              <CardDescription>
+                Average community sentiment over time
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 w-full" role="img" aria-label="Line chart showing community sentiment trends over time">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={pulseData.trendData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="date" 
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                    />
+                    <YAxis 
+                      domain={[-2, 2]}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <Tooltip 
+                      labelFormatter={(value) => `Date: ${new Date(value).toLocaleDateString()}`}
+                      formatter={(value: number, name: string) => [
+                        `${value.toFixed(2)}`, 
+                        'Average Score'
+                      ]}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="avgScore" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                Trend shows daily average sentiment. Confidence varies by sample size per day.
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Pulse;
