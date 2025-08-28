@@ -103,6 +103,88 @@ export type Database = {
           },
         ]
       }
+      stance_history: {
+        Row: {
+          changed_at: string | null
+          id: string
+          prev_links: Json | null
+          prev_rationale: string | null
+          prev_score: number
+          stance_id: string
+        }
+        Insert: {
+          changed_at?: string | null
+          id?: string
+          prev_links?: Json | null
+          prev_rationale?: string | null
+          prev_score: number
+          stance_id: string
+        }
+        Update: {
+          changed_at?: string | null
+          id?: string
+          prev_links?: Json | null
+          prev_rationale?: string | null
+          prev_score?: number
+          stance_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stance_history_stance_id_fkey"
+            columns: ["stance_id"]
+            isOneToOne: false
+            referencedRelation: "stances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stances: {
+        Row: {
+          created_at: string | null
+          extracted_confidence: number | null
+          extracted_score: number | null
+          id: string
+          links: Json | null
+          question_id: string
+          rationale: string | null
+          score: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          extracted_confidence?: number | null
+          extracted_score?: number | null
+          id?: string
+          links?: Json | null
+          question_id: string
+          rationale?: string | null
+          score: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          extracted_confidence?: number | null
+          extracted_score?: number | null
+          id?: string
+          links?: Json | null
+          question_id?: string
+          rationale?: string | null
+          score?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stances_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       story_clusters: {
         Row: {
           created_at: string | null
