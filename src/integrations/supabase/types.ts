@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      agg_question_region_daily: {
+        Row: {
+          city: string | null
+          country_iso: string | null
+          created_at: string | null
+          day: string
+          histogram: Json
+          id: string
+          question_id: string
+          sample_size: number
+          scope: string
+          state: string | null
+        }
+        Insert: {
+          city?: string | null
+          country_iso?: string | null
+          created_at?: string | null
+          day: string
+          histogram: Json
+          id?: string
+          question_id: string
+          sample_size: number
+          scope: string
+          state?: string | null
+        }
+        Update: {
+          city?: string | null
+          country_iso?: string | null
+          created_at?: string | null
+          day?: string
+          histogram?: Json
+          id?: string
+          question_id?: string
+          sample_size?: number
+          scope?: string
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agg_question_region_daily_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
