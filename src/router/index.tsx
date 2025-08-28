@@ -4,6 +4,8 @@ import NotFound from "@/pages/NotFound";
 import Signup from "@/pages/auth/Signup";
 import Profile from "@/pages/settings/Profile";
 import AQPreview from "@/pages/ops/AQPreview";
+import Feed from "@/pages/feed/Feed";
+import QuestionDetail from "@/pages/question/QuestionDetail";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
   {
     path: "/ops/aq-preview",
     element: <AQPreview />,
+  },
+  {
+    path: "/feed",
+    element: <Feed />,
+  },
+  {
+    path: "/question/:id",
+    element: <QuestionDetail />,
   },
   {
     path: "*",
