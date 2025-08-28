@@ -270,33 +270,21 @@ export type Database = {
       public_profiles: {
         Row: {
           avatar_url: string | null
-          city: string | null
-          country: string | null
-          country_iso: string | null
           display_handle: string | null
           id: string | null
           random_id: string | null
-          state: string | null
         }
         Insert: {
           avatar_url?: string | null
-          city?: string | null
-          country?: string | null
-          country_iso?: string | null
           display_handle?: string | null
           id?: string | null
           random_id?: string | null
-          state?: string | null
         }
         Update: {
           avatar_url?: string | null
-          city?: string | null
-          country?: string | null
-          country_iso?: string | null
           display_handle?: string | null
           id?: string | null
           random_id?: string | null
-          state?: string | null
         }
         Relationships: []
       }
