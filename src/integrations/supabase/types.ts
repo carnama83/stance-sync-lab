@@ -163,6 +163,36 @@ export type Database = {
           },
         ]
       }
+      notification_settings: {
+        Row: {
+          alerts_enabled: boolean | null
+          channel_email: boolean | null
+          channel_inapp: boolean | null
+          threshold_shift: number | null
+          updated_at: string | null
+          user_id: string
+          weekly_digest: boolean | null
+        }
+        Insert: {
+          alerts_enabled?: boolean | null
+          channel_email?: boolean | null
+          channel_inapp?: boolean | null
+          threshold_shift?: number | null
+          updated_at?: string | null
+          user_id: string
+          weekly_digest?: boolean | null
+        }
+        Update: {
+          alerts_enabled?: boolean | null
+          channel_email?: boolean | null
+          channel_inapp?: boolean | null
+          threshold_shift?: number | null
+          updated_at?: string | null
+          user_id?: string
+          weekly_digest?: boolean | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string
@@ -463,6 +493,10 @@ export type Database = {
       }
     }
     Functions: {
+      ensure_notif_settings: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
       gen_urlsafe_id: {
         Args: { n?: number }
         Returns: string
