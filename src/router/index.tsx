@@ -5,6 +5,7 @@ import Signup from "@/pages/auth/Signup";
 import Profile from "@/pages/settings/Profile";
 import Privacy from "@/pages/settings/Privacy";
 import Notifications from "@/pages/settings/Notifications";
+import AccountSettings from "@/pages/settings/Account";
 import AQPreview from "@/pages/ops/AQPreview";
 import Feed from "@/pages/feed/Feed";
 import QuestionDetail from "@/pages/question/QuestionDetail";
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/settings/profile",
     element: <Profile />,
+  },
+  {
+    path: "/settings/account",
+    element: <AccountSettings />,
   },
   {
     path: "/settings/privacy",

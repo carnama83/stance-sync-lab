@@ -1,1 +1,31 @@
 project_id = "nkolvdetonkcjtylodol"
+
+[functions.account]
+verify_jwt = true
+
+[functions.insights] 
+verify_jwt = false
+
+[functions.exports]
+verify_jwt = true
+
+[functions.public_api]
+verify_jwt = false
+
+[functions.admin]
+verify_jwt = true
+
+[functions.aggregate]
+verify_jwt = true
+
+[functions.alerts]
+verify_jwt = true
+
+[functions.digest]
+verify_jwt = true
+
+[functions.ingest]
+verify_jwt = true
+
+[functions.moderation]
+verify_jwt = true

@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { listComments, createComment, toggleUpvote, fileReport, checkToxicity, type Comment, type ReportData } from "@/lib/api/comments";
 import type { Database } from "@/integrations/supabase/types";
 import type { Stance } from "@/features/stance/api";
+import InlineInsights from "@/components/insights/InlineInsights";
 
 type Question = Database['public']['Tables']['questions']['Row'];
 
@@ -38,6 +39,7 @@ export default function QuestionDetail() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   
   // Form state
   const [score, setScore] = useState([0]);
@@ -55,13 +57,26 @@ export default function QuestionDetail() {
   const [toxicityWarning, setToxicityWarning] = useState<{show: boolean; score: number} | null>(null);
   const [reportDialog, setReportDialog] = useState<{open: boolean; commentId: string | null}>({open: false, commentId: null});
 
-  // Check authentication
+  // Check authentication and load profile
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       if (!user) {
         navigate('/auth/signup');
+        return;
+      }
+      
+      // Load user profile for location data
+      try {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('city, state, country_iso')
+          .eq('id', user.id)
+          .maybeSingle();
+        setProfile(profileData);
+      } catch (error) {
+        console.error('Error loading profile:', error);
       }
     };
     checkAuth();
@@ -485,6 +500,16 @@ export default function QuestionDetail() {
           )}
         </CardContent>
       </Card>
+
+      {/* Inline Insights */}
+      {question && profile && (
+        <InlineInsights
+          questionId={question.id}
+          myCity={profile.city}
+          myState={profile.state}
+          myCountry={profile.country_iso}
+        />
+      )}
 
       {/* Comments Section */}
       <Card className="mt-8">

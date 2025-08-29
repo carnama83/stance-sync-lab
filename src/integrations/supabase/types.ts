@@ -188,6 +188,66 @@ export type Database = {
           },
         ]
       }
+      consent_logs: {
+        Row: {
+          consent_type: string
+          created_at: string | null
+          granted: boolean
+          id: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          consent_type: string
+          created_at?: string | null
+          granted: boolean
+          id?: string
+          user_id: string
+          version: string
+        }
+        Update: {
+          consent_type?: string
+          created_at?: string | null
+          granted?: boolean
+          id?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      deletion_requests: {
+        Row: {
+          confirm_token: string
+          confirmed_at: string | null
+          delete_after: string
+          error: string | null
+          purged_at: string | null
+          requested_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          confirm_token: string
+          confirmed_at?: string | null
+          delete_after: string
+          error?: string | null
+          purged_at?: string | null
+          requested_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          delete_after?: string
+          error?: string | null
+          purged_at?: string | null
+          requested_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       export_jobs: {
         Row: {
           completed_at: string | null
@@ -261,6 +321,41 @@ export type Database = {
             columns: ["source_id"]
             isOneToOne: false
             referencedRelation: "news_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inline_insights_cache: {
+        Row: {
+          dist: Json
+          question_id: string
+          region_key: string
+          region_level: Database["public"]["Enums"]["region_level"]
+          sample_size: number
+          updated_at: string | null
+        }
+        Insert: {
+          dist?: Json
+          question_id: string
+          region_key: string
+          region_level: Database["public"]["Enums"]["region_level"]
+          sample_size?: number
+          updated_at?: string | null
+        }
+        Update: {
+          dist?: Json
+          question_id?: string
+          region_key?: string
+          region_level?: Database["public"]["Enums"]["region_level"]
+          sample_size?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inline_insights_cache_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
             referencedColumns: ["id"]
           },
         ]
@@ -761,6 +856,7 @@ export type Database = {
       }
     }
     Enums: {
+      region_level: "city" | "state" | "country" | "global"
       subscription_type: "topic" | "region" | "question"
     }
     CompositeTypes: {
@@ -889,6 +985,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      region_level: ["city", "state", "country", "global"],
       subscription_type: ["topic", "region", "question"],
     },
   },
