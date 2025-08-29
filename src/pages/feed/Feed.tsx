@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { sortQuestionsByRelevance, filterQuestions, type SearchFilters } from "@/features/feed/sort";
-import { sanitizeHtml, stripHtml } from "@/lib/utils/sanitizer";
+import { sanitizeHtml, stripHtml } from "@/lib/utils/sanitizer";  
+import SourceLinks from "@/components/questions/SourceLinks";
 import type { Database } from "@/integrations/supabase/types";
 
 type Question = Database['public']['Tables']['questions']['Row'];
@@ -119,12 +120,6 @@ export default function Feed() {
     setFilters(prev => ({ ...prev, language: language === 'all' ? undefined : language }));
   };
 
-  const formatSourceLinks = (sourceLinks: any) => {
-    if (!sourceLinks) return [];
-    if (Array.isArray(sourceLinks)) return sourceLinks;
-    if (typeof sourceLinks === 'object' && sourceLinks.links) return sourceLinks.links;
-    return [];
-  };
 
   if (loading) {
     return (
@@ -208,27 +203,7 @@ export default function Feed() {
                 }}
               />
               
-              {formatSourceLinks(question.source_links).length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {formatSourceLinks(question.source_links).slice(0, 3).map((link: string, index: number) => (
-                    <a
-                      key={index}
-                      href={link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      Source {index + 1}
-                    </a>
-                  ))}
-                  {formatSourceLinks(question.source_links).length > 3 && (
-                    <span className="text-sm text-muted-foreground">
-                      +{formatSourceLinks(question.source_links).length - 3} more
-                    </span>
-                  )}
-                </div>
-              )}
+              <SourceLinks value={question.source_links} />
 
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">

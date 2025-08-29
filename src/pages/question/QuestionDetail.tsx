@@ -13,6 +13,7 @@ import { Loader2, ExternalLink, ArrowLeft, Info, MessageCircle, ThumbsUp, Flag, 
 import { getUserStance, upsertStance, type StanceData } from "@/features/stance/api";
 import { extractStance } from "@/features/stance/nlp/extract";
 import { sanitizeHtml } from "@/lib/utils/sanitizer";
+import SourceLinks from "@/components/questions/SourceLinks";
 import { useToast } from "@/hooks/use-toast";
 import { listComments, createComment, toggleUpvote, fileReport, checkToxicity, type Comment, type ReportData } from "@/lib/api/comments";
 import type { Database } from "@/integrations/supabase/types";
@@ -29,16 +30,6 @@ const STANCE_LABELS = {
   '2': 'Strongly For'
 };
 
-const safeHostname = (raw: string) => {
-  try {
-    const str = raw?.trim() ?? "";
-    if (!str) return "";
-    const withProto = /^https?:\/\//i.test(str) ? str : `https://${str}`;
-    return new URL(withProto).hostname;
-  } catch {
-    return raw;
-  }
-};
 
 export default function QuestionDetail() {
   const { id } = useParams<{ id: string }>();
@@ -383,25 +374,7 @@ export default function QuestionDetail() {
             }}
           />
           
-          {formatSourceLinks(question.source_links).length > 0 && (
-            <div className="border-t pt-4">
-              <h4 className="font-semibold mb-3">Sources</h4>
-              <div className="space-y-2">
-                {formatSourceLinks(question.source_links).map((link: string, index: number) => (
-                  <a
-                    key={index}
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary hover:underline"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    {safeHostname(link)}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+          <SourceLinks value={question.source_links} />
         </CardContent>
       </Card>
 
