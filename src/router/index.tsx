@@ -8,6 +8,7 @@ import Feed from "@/pages/feed/Feed";
 import QuestionDetail from "@/pages/question/QuestionDetail";
 import Analytics from "@/pages/me/Analytics";
 import Pulse from "@/pages/pulse/Pulse";
+import ModerationQueue from "@/pages/ops/moderation/Queue";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: "/pulse",
     element: <Pulse />,
+  },
+  {
+    path: "/ops/moderation",
+    element: <ModerationQueue />,
   },
   {
     path: "*",

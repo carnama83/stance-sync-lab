@@ -128,6 +128,41 @@ export type Database = {
           },
         ]
       }
+      moderation_actions: {
+        Row: {
+          action: string
+          comment_id: string
+          created_at: string | null
+          id: string
+          moderator_id: string | null
+          notes: string | null
+        }
+        Insert: {
+          action: string
+          comment_id: string
+          created_at?: string | null
+          id?: string
+          moderator_id?: string | null
+          notes?: string | null
+        }
+        Update: {
+          action?: string
+          comment_id?: string
+          created_at?: string | null
+          id?: string
+          moderator_id?: string | null
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_actions_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -213,6 +248,44 @@ export type Database = {
             columns: ["story_id"]
             isOneToOne: false
             referencedRelation: "story_clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          comment_id: string
+          created_at: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          severity: string | null
+          status: string | null
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          severity?: string | null
+          status?: string | null
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          severity?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
             referencedColumns: ["id"]
           },
         ]
