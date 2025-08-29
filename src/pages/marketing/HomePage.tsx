@@ -11,7 +11,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-white text-neutral-900">
-      <Header />
       <main>
         <Hero />
         <LiveTopicsPreview items={sampleTopics} />
@@ -24,21 +23,6 @@ export default function HomePage() {
   );
 }
 
-function Header() {
-  return (
-    <header className="sticky top-0 z-10 w-full border-b border-sky-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <Link to="/" className="text-lg font-semibold tracking-tight">Website V2</Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link to="/feed" className="text-sky-900 hover:text-sky-950 hover:underline">Feed</Link>
-          <Link to="/pulse" className="text-sky-900 hover:text-sky-950 hover:underline">Community Pulse</Link>
-          <Link to="/auth/signin" className="text-sky-900 hover:text-sky-950 hover:underline">Log in</Link>
-          <Link to="/auth/signup" className="rounded-2xl border border-sky-400 text-sky-900 px-3 py-1 shadow-sm hover:bg-sky-100">Sign up</Link>
-        </nav>
-      </div>
-    </header>
-  );
-}
 
 function Hero() {
   return (

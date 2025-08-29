@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import HomePage from "@/pages/marketing/HomePage";
 import NotFound from "@/pages/NotFound";
 import Signup from "@/pages/auth/Signup";
@@ -17,79 +17,28 @@ import Inbox from "@/pages/inbox/Inbox";
 import IngestionSettings from "@/pages/admin/ingestion/Settings";
 import Exports from "@/pages/research/Exports";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/auth/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/auth/signin",
-    element: <SignIn />,
-  },
-  {
-    path: "/settings/profile",
-    element: <Profile />,
-  },
-  {
-    path: "/settings/account",
-    element: <AccountSettings />,
-  },
-  {
-    path: "/settings/privacy",
-    element: <Privacy />,
-  },
-  {
-    path: "/settings/notifications",
-    element: <Notifications />,
-  },
-  {
-    path: "/ops/aq-preview",
-    element: <AQPreview />,
-  },
-  {
-    path: "/feed",
-    element: <Feed />,
-  },
-  {
-    path: "/question/:id",
-    element: <QuestionDetail />,
-  },
-  {
-    path: "/me/analytics",
-    element: <Analytics />,
-  },
-  {
-    path: "/pulse",
-    element: <Pulse />,
-  },
-  {
-    path: "/ops/moderation",
-    element: <ModerationQueue />,
-  },
-  {
-    path: "/inbox",
-    element: <Inbox />,
-  },
-  {
-    path: "/admin/ingestion",
-    element: <IngestionSettings />,
-  },
-  {
-    path: "/research/exports",
-    element: <Exports />,
-  },
-  {
-    path: "*",
-    element: <NotFound />,
-  },
-]);
-
-export const AppRouter = () => {
-  return <RouterProvider router={router} />;
+const AppRouter = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/auth/signup" element={<Signup />} />
+      <Route path="/auth/signin" element={<SignIn />} />
+      <Route path="/settings/profile" element={<Profile />} />
+      <Route path="/settings/account" element={<AccountSettings />} />
+      <Route path="/settings/privacy" element={<Privacy />} />
+      <Route path="/settings/notifications" element={<Notifications />} />
+      <Route path="/ops/aq-preview" element={<AQPreview />} />
+      <Route path="/feed" element={<Feed />} />
+      <Route path="/question/:id" element={<QuestionDetail />} />
+      <Route path="/me/analytics" element={<Analytics />} />
+      <Route path="/pulse" element={<Pulse />} />
+      <Route path="/ops/moderation" element={<ModerationQueue />} />
+      <Route path="/inbox" element={<Inbox />} />
+      <Route path="/admin/ingestion" element={<IngestionSettings />} />
+      <Route path="/research/exports" element={<Exports />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 };
 
 export default AppRouter;
