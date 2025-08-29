@@ -3,6 +3,8 @@ import HomePage from "@/pages/marketing/HomePage";
 import NotFound from "@/pages/NotFound";
 import Signup from "@/pages/auth/Signup";
 import Profile from "@/pages/settings/Profile";
+import Privacy from "@/pages/settings/Privacy";
+import Notifications from "@/pages/settings/Notifications";
 import AQPreview from "@/pages/ops/AQPreview";
 import Feed from "@/pages/feed/Feed";
 import QuestionDetail from "@/pages/question/QuestionDetail";
@@ -11,6 +13,7 @@ import Pulse from "@/pages/pulse/Pulse";
 import ModerationQueue from "@/pages/ops/moderation/Queue";
 import Inbox from "@/pages/inbox/Inbox";
 import IngestionSettings from "@/pages/admin/ingestion/Settings";
+import Exports from "@/pages/research/Exports";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,14 @@ const router = createBrowserRouter([
   {
     path: "/settings/profile",
     element: <Profile />,
+  },
+  {
+    path: "/settings/privacy",
+    element: <Privacy />,
+  },
+  {
+    path: "/settings/notifications",
+    element: <Notifications />,
   },
   {
     path: "/ops/aq-preview",
@@ -56,6 +67,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/ingestion",
     element: <IngestionSettings />,
+  },
+  {
+    path: "/research/exports",
+    element: <Exports />,
   },
   {
     path: "*",
