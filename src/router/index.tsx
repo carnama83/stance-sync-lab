@@ -9,6 +9,8 @@ import QuestionDetail from "@/pages/question/QuestionDetail";
 import Analytics from "@/pages/me/Analytics";
 import Pulse from "@/pages/pulse/Pulse";
 import ModerationQueue from "@/pages/ops/moderation/Queue";
+import Inbox from "@/pages/inbox/Inbox";
+import IngestionSettings from "@/pages/admin/ingestion/Settings";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,14 @@ const router = createBrowserRouter([
   {
     path: "/ops/moderation",
     element: <ModerationQueue />,
+  },
+  {
+    path: "/inbox",
+    element: <Inbox />,
+  },
+  {
+    path: "/admin/ingestion",
+    element: <IngestionSettings />,
   },
   {
     path: "*",

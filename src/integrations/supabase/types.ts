@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       agg_question_region_daily: {
         Row: {
           city: string | null
@@ -128,6 +146,71 @@ export type Database = {
           },
         ]
       }
+      ingestion_health: {
+        Row: {
+          created_at: string | null
+          id: string
+          info: string | null
+          source_id: string | null
+          stage: string
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          info?: string | null
+          source_id?: string | null
+          stage: string
+          status: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          info?: string | null
+          source_id?: string | null
+          stage?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingestion_health_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "news_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_runs: {
+        Row: {
+          created_at: string | null
+          id: string
+          job_name: string
+          stats: Json | null
+          status: string
+          window_end: string | null
+          window_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          job_name: string
+          stats?: Json | null
+          status?: string
+          window_end?: string | null
+          window_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          job_name?: string
+          stats?: Json | null
+          status?: string
+          window_end?: string | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       moderation_actions: {
         Row: {
           action: string
@@ -162,6 +245,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      news_sources: {
+        Row: {
+          base_url: string | null
+          enabled: boolean | null
+          id: string
+          last_latency_ms: number | null
+          last_status: string | null
+          name: string
+          polling_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          base_url?: string | null
+          enabled?: boolean | null
+          id?: string
+          last_latency_ms?: number | null
+          last_status?: string | null
+          name: string
+          polling_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          base_url?: string | null
+          enabled?: boolean | null
+          id?: string
+          last_latency_ms?: number | null
+          last_status?: string | null
+          name?: string
+          polling_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       notification_settings: {
         Row: {
