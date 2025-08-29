@@ -79,6 +79,48 @@ export type Database = {
           },
         ]
       }
+      aggregate_snapshots: {
+        Row: {
+          created_by: string | null
+          dist: Json
+          id: string
+          k_threshold: number
+          region: string | null
+          sample_size: number
+          scope: string
+          snapshot_at: string
+          topic: string | null
+          trend: Json | null
+          version: string
+        }
+        Insert: {
+          created_by?: string | null
+          dist: Json
+          id?: string
+          k_threshold?: number
+          region?: string | null
+          sample_size: number
+          scope: string
+          snapshot_at?: string
+          topic?: string | null
+          trend?: Json | null
+          version?: string
+        }
+        Update: {
+          created_by?: string | null
+          dist?: Json
+          id?: string
+          k_threshold?: number
+          region?: string | null
+          sample_size?: number
+          scope?: string
+          snapshot_at?: string
+          topic?: string | null
+          trend?: Json | null
+          version?: string
+        }
+        Relationships: []
+      }
       comment_votes: {
         Row: {
           comment_id: string
@@ -145,6 +187,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      export_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          error: string | null
+          file_path: string | null
+          filters: Json
+          format: string
+          id: string
+          k_threshold: number
+          requested_by: string
+          row_count: number | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          error?: string | null
+          file_path?: string | null
+          filters?: Json
+          format: string
+          id?: string
+          k_threshold?: number
+          requested_by: string
+          row_count?: number | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          error?: string | null
+          file_path?: string | null
+          filters?: Json
+          format?: string
+          id?: string
+          k_threshold?: number
+          requested_by?: string
+          row_count?: number | null
+          status?: string
+        }
+        Relationships: []
       }
       ingestion_health: {
         Row: {
@@ -309,6 +393,30 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_subscriptions: {
+        Row: {
+          created_at: string | null
+          enabled: boolean
+          s_key: string
+          s_type: Database["public"]["Enums"]["subscription_type"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          enabled?: boolean
+          s_key: string
+          s_type: Database["public"]["Enums"]["subscription_type"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          enabled?: boolean
+          s_key?: string
+          s_type?: Database["public"]["Enums"]["subscription_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string
@@ -338,6 +446,30 @@ export type Database = {
           read_at?: string | null
           title?: string
           type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      privacy_settings: {
+        Row: {
+          is_public_profile: boolean | null
+          show_age: boolean | null
+          show_location: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          is_public_profile?: boolean | null
+          show_age?: boolean | null
+          show_location?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          is_public_profile?: boolean | null
+          show_age?: boolean | null
+          show_location?: boolean | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -629,7 +761,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      subscription_type: "topic" | "region" | "question"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -756,6 +888,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_type: ["topic", "region", "question"],
+    },
   },
 } as const
