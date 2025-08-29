@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -361,6 +361,11 @@ export default function Signup() {
             >
               Back to Home
             </Button>
+            <div className="mt-4 text-sm">
+              <Link to="/auth/signin" className="text-sky-900 underline">
+                Already have an account? Sign in
+              </Link>
+            </div>
           </CardFooter>
         </form>
       </Card>

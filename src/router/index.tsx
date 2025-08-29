@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "@/pages/marketing/HomePage";
 import NotFound from "@/pages/NotFound";
 import Signup from "@/pages/auth/Signup";
+import SignIn from "@/pages/auth/SignIn";
 import Profile from "@/pages/settings/Profile";
 import Privacy from "@/pages/settings/Privacy";
 import Notifications from "@/pages/settings/Notifications";
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/signup",
     element: <Signup />,
+  },
+  {
+    path: "/auth/signin",
+    element: <SignIn />,
   },
   {
     path: "/settings/profile",

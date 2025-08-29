@@ -32,6 +32,7 @@ function Header() {
         <nav className="flex items-center gap-6 text-sm">
           <Link to="/feed" className="text-sky-900 hover:text-sky-950 hover:underline">Feed</Link>
           <Link to="/pulse" className="text-sky-900 hover:text-sky-950 hover:underline">Community Pulse</Link>
+          <Link to="/auth/signin" className="text-sky-900 hover:text-sky-950 hover:underline">Log in</Link>
           <Link to="/auth/signup" className="rounded-2xl border border-sky-400 text-sky-900 px-3 py-1 shadow-sm hover:bg-sky-100">Sign up</Link>
         </nav>
       </div>
