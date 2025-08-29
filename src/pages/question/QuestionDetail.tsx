@@ -29,6 +29,17 @@ const STANCE_LABELS = {
   '2': 'Strongly For'
 };
 
+const safeHostname = (raw: string) => {
+  try {
+    const str = raw?.trim() ?? "";
+    if (!str) return "";
+    const withProto = /^https?:\/\//i.test(str) ? str : `https://${str}`;
+    return new URL(withProto).hostname;
+  } catch {
+    return raw;
+  }
+};
+
 export default function QuestionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -385,7 +396,7 @@ export default function QuestionDetail() {
                     className="inline-flex items-center gap-2 text-primary hover:underline"
                   >
                     <ExternalLink className="h-4 w-4" />
-                    {new URL(link).hostname}
+                    {safeHostname(link)}
                   </a>
                 ))}
               </div>
