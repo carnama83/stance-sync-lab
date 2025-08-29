@@ -61,6 +61,73 @@ export type Database = {
           },
         ]
       }
+      comment_votes: {
+        Row: {
+          comment_id: string
+          created_at: string | null
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string | null
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_votes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          body: string
+          created_at: string | null
+          id: string
+          is_hidden: boolean | null
+          question_id: string
+          toxicity_flag: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          id?: string
+          is_hidden?: boolean | null
+          question_id: string
+          toxicity_flag?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          id?: string
+          is_hidden?: boolean | null
+          question_id?: string
+          toxicity_flag?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
