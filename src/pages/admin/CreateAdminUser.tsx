@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import bcrypt from "bcryptjs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,64 +7,63 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { UserPlus, CheckCircle } from "lucide-react";
 
 export default function CreateAdminUser() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmMsg, setConfirmMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleCreateAdmin = async () => {
-    setError("");
-    setMessage("");
+  // We stored the admin's email at login
+  const adminEmail = localStorage.getItem("adminEmail") || "";
+  const [adminPassword, setAdminPassword] = useState("");
 
-    // Validation
-    if (!email || !password || !confirmPassword) {
-      setError("Please fill in all fields");
+  async function handleCreate() {
+    setError(null);
+    setConfirmMsg(null);
+
+    if (!adminEmail) {
+      setError("Missing admin session. Please log out and log in again.");
       return;
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (!newEmail || !newPassword) {
+      setError("Provide new admin email and password.");
       return;
     }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
+    if (!adminPassword) {
+      setError("Please confirm your admin password.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const { error } = await supabase
-        .from("admin_users")
-        .insert([{ email, password_hash: hashedPassword }]);
+      const { data, error } = await supabase.rpc("admin_create_admin", {
+        p_admin_email: adminEmail,
+        p_admin_password: adminPassword,
+        p_email: newEmail,
+        p_password: newPassword,
+      });
 
       if (error) {
-        if (error.code === '23505') { // unique violation
-          setError("An admin user with this email already exists");
-        } else {
-          setError(`Error: ${error.message}`);
-        }
-      } else {
-        setMessage("Admin user created successfully!");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
+        setError(error.message || "Failed to create admin.");
+        return;
+      }
+      if (data) {
+        setConfirmMsg("Admin user created/updated successfully.");
+        setNewEmail("");
+        setNewPassword("");
+        setAdminPassword("");
       }
     } catch (err: any) {
       setError(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleCreateAdmin();
+    handleCreate();
   };
 
   return (
@@ -88,57 +86,70 @@ export default function CreateAdminUser() {
               </Alert>
             )}
             
-            {message && (
+            {confirmMsg && (
               <Alert>
                 <CheckCircle className="h-4 w-4" />
-                <AlertDescription>{message}</AlertDescription>
+                <AlertDescription>{confirmMsg}</AlertDescription>
               </Alert>
             )}
 
             <div className="space-y-2">
-              <label htmlFor="admin-email" className="text-sm font-medium">
-                Admin Email
+              <label htmlFor="current-admin-email" className="text-sm font-medium">
+                Your Admin Email
               </label>
               <Input
-                id="admin-email"
+                id="current-admin-email"
                 type="email"
-                placeholder="admin@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={adminEmail}
+                disabled
+                className="bg-muted"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="admin-password-confirm" className="text-sm font-medium">
+                Confirm Your Admin Password
+              </label>
+              <Input
+                id="admin-password-confirm"
+                type="password"
+                placeholder="Your admin password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="admin-password" className="text-sm font-medium">
-                Password
+              <label htmlFor="new-admin-email" className="text-sm font-medium">
+                New Admin Email
               </label>
               <Input
-                id="admin-password"
-                type="password"
-                placeholder="Enter password (min 8 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="new-admin-email"
+                type="email"
+                placeholder="new-admin@example.com"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirm-password" className="text-sm font-medium">
-                Confirm Password
+              <label htmlFor="new-admin-password" className="text-sm font-medium">
+                New Admin Password
               </label>
               <Input
-                id="confirm-password"
+                id="new-admin-password"
                 type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Choose a strong password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating Admin..." : "Create Admin User"}
+              {loading ? "Creating Admin..." : "Create / Update Admin"}
             </Button>
           </form>
         </CardContent>
