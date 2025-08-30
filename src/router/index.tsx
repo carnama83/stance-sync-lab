@@ -16,6 +16,8 @@ import ModerationQueue from "@/pages/ops/moderation/Queue";
 import Inbox from "@/pages/inbox/Inbox";
 import IngestionSettings from "@/pages/admin/ingestion/Settings";
 import Exports from "@/pages/research/Exports";
+import AdminLogin from "@/pages/admin/Login";
+import AdminPortal from "@/pages/admin/Index";
 
 const AppRouter = () => {
   return (
@@ -36,6 +38,8 @@ const AppRouter = () => {
       <Route path="/inbox" element={<Inbox />} />
       <Route path="/admin/ingestion" element={<IngestionSettings />} />
       <Route path="/research/exports" element={<Exports />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminPortal />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -32,6 +32,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          password_hash: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          password_hash: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          password_hash?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       agg_question_region_daily: {
         Row: {
           city: string | null
