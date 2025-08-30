@@ -860,6 +860,15 @@ export type Database = {
       }
     }
     Functions: {
+      admin_create_admin: {
+        Args: {
+          p_admin_email: string
+          p_admin_password: string
+          p_email: string
+          p_password: string
+        }
+        Returns: string
+      }
       ensure_notif_settings: {
         Args: { p_user: string }
         Returns: undefined

@@ -37,7 +37,7 @@ export default function CreateAdminUser() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.rpc("admin_create_admin", {
+      const { data, error } = await supabase.rpc("admin_create_admin" as any, {
         p_admin_email: adminEmail,
         p_admin_password: adminPassword,
         p_email: newEmail,
