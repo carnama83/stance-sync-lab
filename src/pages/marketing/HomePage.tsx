@@ -169,6 +169,7 @@ function Footer() {
         <div className="flex gap-3">
           <Link to="/privacy" className="hover:underline hover:text-sky-900">Privacy</Link>
           <Link to="/terms" className="hover:underline hover:text-sky-900">Terms</Link>
+          <Link to="/admin/login" className="hover:underline hover:text-sky-900">Admin Portal</Link>
         </div>
       </div>
     </footer>
