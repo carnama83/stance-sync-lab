@@ -19,18 +19,29 @@ export default function AdminLogin() {
     setError(null);
 
     try {
+      console.log("Attempting login with:", { email, password });
+      
       const { data: adminUser, error } = await supabase
         .from("admin_users")
         .select("*")
         .eq("email", email)
         .single();
 
+      console.log("Database query result:", { adminUser, error });
+
       if (error || !adminUser) {
+        console.log("No user found or database error");
         setError("Invalid username or password");
         return;
       }
 
+      console.log("Comparing passwords...", { 
+        inputPassword: password, 
+        storedHash: adminUser.password_hash 
+      });
+
       const isPasswordValid = await bcrypt.compare(password, adminUser.password_hash);
+      console.log("Password comparison result:", isPasswordValid);
 
       if (isPasswordValid) {
         localStorage.setItem("admin", "true");
@@ -40,6 +51,7 @@ export default function AdminLogin() {
         setError("Invalid username or password");
       }
     } catch (err) {
+      console.error("Login error:", err);
       setError("An error occurred during login");
     } finally {
       setLoading(false);
