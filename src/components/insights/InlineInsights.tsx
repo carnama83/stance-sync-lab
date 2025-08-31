@@ -10,6 +10,12 @@ interface InlineInsightsProps {
   myCity?: string;
   myState?: string;
   myCountry?: string;
+  profileData?: {
+    country_iso: string;
+    region_id: string;
+    city_id: string;
+    county_id?: string;
+  };
 }
 
 const STANCE_LABELS = {
@@ -20,7 +26,7 @@ const STANCE_LABELS = {
   '2': 'Strongly For'
 };
 
-export default function InlineInsights({ questionId, myCity, myState, myCountry }: InlineInsightsProps) {
+export default function InlineInsights({ questionId, myCity, myState, myCountry, profileData }: InlineInsightsProps) {
   const [insights, setInsights] = useState<Record<string, InlineInsight>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState<'city' | 'state' | 'country' | 'global'>('global');

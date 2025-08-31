@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import { validateUsername } from '@/lib/validations/username';
-import { mockGeolocateIP, validateLocationData, COUNTRY_OPTIONS, type LocationData } from '@/lib/utils/location';
+import LocationPicker from '@/components/location/LocationPicker';
 
 interface SignupFormData {
   email: string;
@@ -17,13 +17,17 @@ interface SignupFormData {
   dob: string;
   username?: string;
   useUsername: boolean;
-  location: LocationData;
+  location: {
+    countryIso?: string;
+    regionId?: string;
+    countyId?: string | null;
+    cityId?: string | null;
+  };
 }
 
 export default function Signup() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [locationLoading, setLocationLoading] = useState(true);
   const [formData, setFormData] = useState<SignupFormData>({
     email: '',
     password: '',
@@ -31,30 +35,10 @@ export default function Signup() {
     dob: '',
     username: '',
     useUsername: false,
-    location: { city: '', state: '', country: '', country_iso: 'US' }
+    location: {}
   });
   const [usernameError, setUsernameError] = useState<string | null>(null);
 
-  // Mock IP geolocation on component mount
-  useEffect(() => {
-    const loadLocation = async () => {
-      try {
-        const location = await mockGeolocateIP();
-        setFormData(prev => ({ ...prev, location }));
-      } catch (error) {
-        console.error('Failed to get location:', error);
-        toast({
-          title: "Location Detection Failed",
-          description: "Please enter your location manually.",
-          variant: "destructive"
-        });
-      } finally {
-        setLocationLoading(false);
-      }
-    };
-
-    loadLocation();
-  }, []);
 
   // Validate username on change
   useEffect(() => {
@@ -70,11 +54,8 @@ export default function Signup() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleLocationChange = (field: keyof LocationData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      location: { ...prev.location, [field]: value }
-    }));
+  const handleLocationChange = (location: any) => {
+    setFormData(prev => ({ ...prev, location }));
   };
 
   const validateForm = (): boolean => {
@@ -118,10 +99,10 @@ export default function Signup() {
       return false;
     }
 
-    if (!validateLocationData(formData.location)) {
+    if (!formData.location.countryIso || !formData.location.regionId || !formData.location.cityId) {
       toast({
         title: "Invalid Location",
-        description: "Please provide valid location information.",
+        description: "Please select country, region, and city.",
         variant: "destructive"
       });
       return false;
@@ -150,10 +131,6 @@ export default function Signup() {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             dob: formData.dob,
-            city: formData.location.city,
-            state: formData.location.state,
-            country: formData.location.country,
-            country_iso: formData.location.country_iso,
             username: formData.useUsername ? formData.username : null,
           }
         }
@@ -161,14 +138,10 @@ export default function Signup() {
 
       if (authError) throw authError;
 
-      if (authData.user) {
+      if (authData.user && authData.session) {
         // Update profile with additional data if user was created
         const profileUpdate: any = {
           dob: formData.dob,
-          city: formData.location.city,
-          state: formData.location.state,
-          country: formData.location.country,
-          country_iso: formData.location.country_iso,
         };
 
         if (formData.useUsername && formData.username) {
@@ -184,6 +157,21 @@ export default function Signup() {
         if (profileError) {
           console.error('Profile update error:', profileError);
           // Don't block signup for profile update errors
+        }
+
+        // Set location using the RPC function
+        try {
+          const { error: locationError } = await supabase.rpc('profiles_set_location', {
+            p_region: formData.location.regionId,
+            p_city: formData.location.cityId,
+            p_county: formData.location.countyId
+          });
+
+          if (locationError) {
+            console.error('Location update error:', locationError);
+          }
+        } catch (error) {
+          console.error('Location update failed:', error);
         }
 
         toast({
@@ -289,59 +277,13 @@ export default function Signup() {
             </div>
 
             {/* Location */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <Label>Location (Privacy: City/State/Country only) *</Label>
-              
-              {locationLoading ? (
-                <p className="text-sm text-muted-foreground">Detecting location...</p>
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      placeholder="City"
-                      value={formData.location.city}
-                      onChange={(e) => handleLocationChange('city', e.target.value)}
-                      required
-                    />
-                    <Input
-                      placeholder="State/Province"
-                      value={formData.location.state}
-                      onChange={(e) => handleLocationChange('state', e.target.value)}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select 
-                      value={formData.location.country_iso} 
-                      onValueChange={(value) => {
-                        const country = COUNTRY_OPTIONS.find(c => c.code === value);
-                        if (country) {
-                          handleLocationChange('country_iso', value);
-                          handleLocationChange('country', country.name);
-                        }
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {COUNTRY_OPTIONS.map(country => (
-                          <SelectItem key={country.code} value={country.code}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      value={formData.location.country}
-                      onChange={(e) => handleLocationChange('country', e.target.value)}
-                      placeholder="Country name"
-                      required
-                    />
-                  </div>
-                </>
-              )}
+              <LocationPicker 
+                value={formData.location}
+                onChange={handleLocationChange}
+                required
+              />
             </div>
           </CardContent>
           
@@ -349,7 +291,7 @@ export default function Signup() {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={loading || locationLoading || (formData.useUsername && !!usernameError)}
+              disabled={loading || (formData.useUsername && !!usernameError)}
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
 import { validateUsername } from '@/lib/validations/username';
-import { COUNTRY_OPTIONS, type LocationData } from '@/lib/utils/location';
+import LocationPicker from '@/components/location/LocationPicker';
 import type { User } from '@supabase/supabase-js';
 
 interface Profile {
@@ -23,6 +23,9 @@ interface Profile {
   state: string;
   country: string;
   country_iso: string;
+  region_id: string | null;
+  city_id: string | null;
+  county_id: string | null;
 }
 
 export default function Profile() {
@@ -88,9 +91,14 @@ export default function Profile() {
     setProfile(prev => prev ? { ...prev, [field]: value } : null);
   };
 
-  const handleLocationChange = (field: keyof LocationData, value: string) => {
+  const handleLocationChange = (location: any) => {
     if (!profile) return;
-    setProfile(prev => prev ? { ...prev, [field]: value } : null);
+    setProfile(prev => prev ? { 
+      ...prev, 
+      region_id: location.regionId,
+      city_id: location.cityId,
+      county_id: location.countyId
+    } : null);
   };
 
   const handleDisplayToggle = () => {
@@ -160,10 +168,6 @@ export default function Profile() {
         username: profile.username || null,
         display_handle: profile.display_handle,
         avatar_url: avatarUrl,
-        city: profile.city,
-        state: profile.state,
-        country: profile.country,
-        country_iso: profile.country_iso,
       };
 
       const { error } = await supabase
@@ -172,6 +176,17 @@ export default function Profile() {
         .eq('id', user.id);
 
       if (error) throw error;
+
+      // Update location using RPC function
+      if (profile.region_id && profile.city_id) {
+        const { error: locationError } = await supabase.rpc('profiles_set_location', {
+          p_region: profile.region_id,
+          p_city: profile.city_id,
+          p_county: profile.county_id
+        });
+
+        if (locationError) throw locationError;
+      }
 
       // Update local state
       setProfile(prev => prev ? { ...prev, avatar_url: avatarUrl } : null);
@@ -314,60 +329,15 @@ export default function Profile() {
             {/* Location Section */}
             <div className="space-y-4">
               <Label className="text-base font-semibold">Location (Public)</Label>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="city">City</Label>
-                  <Input
-                    id="city"
-                    value={profile.city}
-                    onChange={(e) => handleLocationChange('city', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="state">State/Province</Label>
-                  <Input
-                    id="state"
-                    value={profile.state}
-                    onChange={(e) => handleLocationChange('state', e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="country_iso">Country</Label>
-                  <Select 
-                    value={profile.country_iso} 
-                    onValueChange={(value) => {
-                      const country = COUNTRY_OPTIONS.find(c => c.code === value);
-                      if (country) {
-                        handleLocationChange('country_iso', value);
-                        handleLocationChange('country', country.name);
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COUNTRY_OPTIONS.map(country => (
-                        <SelectItem key={country.code} value={country.code}>
-                          {country.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="country">Country Name</Label>
-                  <Input
-                    id="country"
-                    value={profile.country}
-                    onChange={(e) => handleLocationChange('country', e.target.value)}
-                  />
-                </div>
-              </div>
+              <LocationPicker
+                value={{
+                  countryIso: profile.country_iso,
+                  regionId: profile.region_id || undefined,
+                  countyId: profile.county_id,
+                  cityId: profile.city_id || undefined
+                }}
+                onChange={handleLocationChange}
+              />
             </div>
 
             {/* Read-only DOB */}

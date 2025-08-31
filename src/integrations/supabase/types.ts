@@ -145,6 +145,64 @@ export type Database = {
         }
         Relationships: []
       }
+      cities: {
+        Row: {
+          alt_names: Json | null
+          country_iso2: string
+          county_id: string | null
+          id: string
+          lat: number | null
+          lon: number | null
+          name: string
+          population: number | null
+          region_id: string
+        }
+        Insert: {
+          alt_names?: Json | null
+          country_iso2: string
+          county_id?: string | null
+          id?: string
+          lat?: number | null
+          lon?: number | null
+          name: string
+          population?: number | null
+          region_id: string
+        }
+        Update: {
+          alt_names?: Json | null
+          country_iso2?: string
+          county_id?: string | null
+          id?: string
+          lat?: number | null
+          lon?: number | null
+          name?: string
+          population?: number | null
+          region_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cities_country_iso2_fkey"
+            columns: ["country_iso2"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["iso2"]
+          },
+          {
+            foreignKeyName: "cities_county_id_fkey"
+            columns: ["county_id"]
+            isOneToOne: false
+            referencedRelation: "counties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cities_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comment_votes: {
         Row: {
           comment_id: string
@@ -236,6 +294,69 @@ export type Database = {
           id?: string
           user_id?: string
           version?: string
+        }
+        Relationships: []
+      }
+      counties: {
+        Row: {
+          country_iso2: string
+          fips_code: string | null
+          id: string
+          name: string
+          region_id: string
+        }
+        Insert: {
+          country_iso2: string
+          fips_code?: string | null
+          id?: string
+          name: string
+          region_id: string
+        }
+        Update: {
+          country_iso2?: string
+          fips_code?: string | null
+          id?: string
+          name?: string
+          region_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "counties_country_iso2_fkey"
+            columns: ["country_iso2"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["iso2"]
+          },
+          {
+            foreignKeyName: "counties_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      countries: {
+        Row: {
+          continent_code: string | null
+          emoji: string | null
+          iso2: string
+          iso3: string | null
+          name: string
+        }
+        Insert: {
+          continent_code?: string | null
+          emoji?: string | null
+          iso2: string
+          iso3?: string | null
+          name: string
+        }
+        Update: {
+          continent_code?: string | null
+          emoji?: string | null
+          iso2?: string
+          iso3?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -597,13 +718,16 @@ export type Database = {
         Row: {
           avatar_url: string | null
           city: string
+          city_id: string | null
           country: string
           country_iso: string
+          county_id: string | null
           created_at: string | null
           display_handle: string
           dob: string
           id: string
           random_id: string
+          region_id: string | null
           state: string
           updated_at: string | null
           username: string | null
@@ -611,13 +735,16 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           city: string
+          city_id?: string | null
           country: string
           country_iso: string
+          county_id?: string | null
           created_at?: string | null
           display_handle: string
           dob: string
           id: string
           random_id: string
+          region_id?: string | null
           state: string
           updated_at?: string | null
           username?: string | null
@@ -625,18 +752,43 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           city?: string
+          city_id?: string | null
           country?: string
           country_iso?: string
+          county_id?: string | null
           created_at?: string | null
           display_handle?: string
           dob?: string
           id?: string
           random_id?: string
+          region_id?: string | null
           state?: string
           updated_at?: string | null
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_city_fk"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_county_fk"
+            columns: ["county_id"]
+            isOneToOne: false
+            referencedRelation: "counties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_region_fk"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       questions: {
         Row: {
@@ -679,6 +831,38 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "story_clusters"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      regions: {
+        Row: {
+          code: string
+          country_iso2: string
+          id: string
+          name: string
+          type: string | null
+        }
+        Insert: {
+          code: string
+          country_iso2: string
+          id?: string
+          name: string
+          type?: string | null
+        }
+        Update: {
+          code?: string
+          country_iso2?: string
+          id?: string
+          name?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regions_country_iso2_fkey"
+            columns: ["country_iso2"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["iso2"]
           },
         ]
       }
@@ -757,6 +941,9 @@ export type Database = {
       }
       stances: {
         Row: {
+          city_id: string | null
+          country_iso: string | null
+          county_id: string | null
           created_at: string | null
           extracted_confidence: number | null
           extracted_score: number | null
@@ -764,11 +951,15 @@ export type Database = {
           links: Json | null
           question_id: string
           rationale: string | null
+          region_id: string | null
           score: number
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          city_id?: string | null
+          country_iso?: string | null
+          county_id?: string | null
           created_at?: string | null
           extracted_confidence?: number | null
           extracted_score?: number | null
@@ -776,11 +967,15 @@ export type Database = {
           links?: Json | null
           question_id: string
           rationale?: string | null
+          region_id?: string | null
           score: number
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          city_id?: string | null
+          country_iso?: string | null
+          county_id?: string | null
           created_at?: string | null
           extracted_confidence?: number | null
           extracted_score?: number | null
@@ -788,6 +983,7 @@ export type Database = {
           links?: Json | null
           question_id?: string
           rationale?: string | null
+          region_id?: string | null
           score?: number
           updated_at?: string | null
           user_id?: string
@@ -858,6 +1054,19 @@ export type Database = {
         }
         Relationships: []
       }
+      question_region_agg: {
+        Row: {
+          bucket: number | null
+          city_id: string | null
+          cnt: number | null
+          country_iso: string | null
+          geo_scope: string | null
+          question_id: string | null
+          region_id: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_create_admin: {
@@ -869,6 +1078,30 @@ export type Database = {
         }
         Returns: string
       }
+      cities_by_region: {
+        Args: { p_region: string }
+        Returns: {
+          id: string
+          name: string
+          population: number
+        }[]
+      }
+      counties_by_region: {
+        Args: { p_region: string }
+        Returns: {
+          fips_code: string
+          id: string
+          name: string
+        }[]
+      }
+      countries_list: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          emoji: string
+          iso2: string
+          name: string
+        }[]
+      }
       ensure_notif_settings: {
         Args: { p_user: string }
         Returns: undefined
@@ -876,6 +1109,39 @@ export type Database = {
       gen_urlsafe_id: {
         Args: { n?: number }
         Returns: string
+      }
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      profiles_set_location: {
+        Args: { p_city: string; p_county: string; p_region: string }
+        Returns: undefined
+      }
+      regions_by_country: {
+        Args: { p_iso2: string }
+        Returns: {
+          code: string
+          id: string
+          name: string
+          type: string
+        }[]
       }
       rpc_stances_with_location: {
         Args: Record<PropertyKey, never>
@@ -886,6 +1152,18 @@ export type Database = {
           score: number
           state: string
         }[]
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
       }
     }
     Enums: {

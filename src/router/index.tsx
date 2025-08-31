@@ -12,6 +12,7 @@ import Feed from "@/pages/feed/Feed";
 import QuestionDetail from "@/pages/question/QuestionDetail";
 import Analytics from "@/pages/me/Analytics";
 import Pulse from "@/pages/pulse/Pulse";
+import CommunityPulse from "@/pages/pulse/CommunityPulse";
 import ModerationQueue from "@/pages/ops/moderation/Queue";
 import Inbox from "@/pages/inbox/Inbox";
 import IngestionSettings from "@/pages/admin/ingestion/Settings";
@@ -33,7 +34,7 @@ const AppRouter = () => {
       <Route path="/feed" element={<Feed />} />
       <Route path="/question/:id" element={<QuestionDetail />} />
       <Route path="/me/analytics" element={<Analytics />} />
-      <Route path="/pulse" element={<Pulse />} />
+      <Route path="/pulse" element={<CommunityPulse />} />
       <Route path="/ops/moderation" element={<ModerationQueue />} />
       <Route path="/inbox" element={<Inbox />} />
       <Route path="/admin/ingestion" element={<IngestionSettings />} />

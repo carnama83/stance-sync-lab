@@ -73,7 +73,7 @@ export default function QuestionDetail() {
       try {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('city, state, country_iso')
+          .select('city, state, country_iso, region_id, city_id, county_id')
           .eq('id', user.id)
           .maybeSingle();
         setProfile(profileData);
@@ -489,9 +489,12 @@ export default function QuestionDetail() {
       {question && profile && (
         <InlineInsights
           questionId={question.id}
-          myCity={profile.city}
-          myState={profile.state}
-          myCountry={profile.country_iso}
+          profileData={{
+            country_iso: profile.country_iso,
+            region_id: profile.region_id,
+            city_id: profile.city_id,
+            county_id: profile.county_id
+          }}
         />
       )}
 
