@@ -81,6 +81,7 @@ export default function Header() {
         <Link to="/" className="text-lg font-semibold tracking-tight">Website V2</Link>
 
         <nav className="flex items-center gap-6 text-sm" aria-label="Primary">
+          <Link className={link} to="/" aria-current={pathname === "/" ? "page" : undefined}>Home</Link>
           <Link className={link} to="/feed" aria-current={pathname === "/feed" ? "page" : undefined}>Feed</Link>
           <Link className={link} to="/pulse" aria-current={pathname === "/pulse" ? "page" : undefined}>Community Pulse</Link>
 
