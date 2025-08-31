@@ -314,12 +314,12 @@ const CommunityPulse = () => {
             {/* Country */}
             <div className="space-y-2">
               <Label>Country</Label>
-              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+              <Select value={selectedCountry || 'global'} onValueChange={(v) => setSelectedCountry(v === 'global' ? '' : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Global</SelectItem>
+                  <SelectItem value="global">Global</SelectItem>
                   {countries.map(country => (
                     <SelectItem key={country.iso2} value={country.iso2}>
                       {country.emoji ? `${country.emoji} ` : ''}{country.name}
@@ -332,16 +332,12 @@ const CommunityPulse = () => {
             {/* Region */}
             <div className="space-y-2">
               <Label>Region/State</Label>
-              <Select 
-                value={selectedRegion} 
-                onValueChange={setSelectedRegion}
-                disabled={!selectedCountry}
-              >
+              <Select value={selectedRegion || 'all'} onValueChange={(v) => setSelectedRegion(v === 'all' ? '' : v)} disabled={!selectedCountry}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select region" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All regions</SelectItem>
+                  <SelectItem value="all">All regions</SelectItem>
                   {regions.map(region => (
                     <SelectItem key={region.id} value={region.id}>
                       {region.name} ({region.type})
@@ -354,16 +350,12 @@ const CommunityPulse = () => {
             {/* City */}
             <div className="space-y-2">
               <Label>City</Label>
-              <Select 
-                value={selectedCity} 
-                onValueChange={setSelectedCity}
-                disabled={!selectedRegion}
-              >
+              <Select value={selectedCity || 'all'} onValueChange={(v) => setSelectedCity(v === 'all' ? '' : v)} disabled={!selectedRegion}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select city" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All cities</SelectItem>
+                  <SelectItem value="all">All cities</SelectItem>
                   {cities.map(city => (
                     <SelectItem key={city.id} value={city.id}>
                       {city.name}
