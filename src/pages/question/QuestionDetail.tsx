@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/safe-select";
 import { Loader2, ExternalLink, ArrowLeft, Info, MessageCircle, ThumbsUp, Flag, AlertTriangle } from "lucide-react";
 import { getUserStance, upsertStance, type StanceData } from "@/features/stance/api";
 import { extractStance } from "@/features/stance/nlp/extract";

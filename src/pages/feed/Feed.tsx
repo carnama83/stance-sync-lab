@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/safe-select";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { sortQuestionsByRelevance, filterQuestions, type SearchFilters } from "@/features/feed/sort";
 import { sanitizeHtml, stripHtml } from "@/lib/utils/sanitizer";  
