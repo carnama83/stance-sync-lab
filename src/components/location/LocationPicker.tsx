@@ -198,7 +198,7 @@ export default function LocationPicker({ value, onChange, required = false }: Lo
   const handleCountyChange = (countyId: string | null) => {
     onChange({
       ...value,
-      countyId
+      countyId: countyId === "none" ? null : countyId
     });
   };
 
@@ -261,7 +261,7 @@ export default function LocationPicker({ value, onChange, required = false }: Lo
       <div className="space-y-2">
         <Label htmlFor="county">County (Optional)</Label>
         <Select 
-          value={value.countyId || ''} 
+          value={value.countyId || 'none'} 
           onValueChange={(val) => handleCountyChange(val || null)}
           disabled={!value.regionId || loadingCounties}
         >
@@ -269,7 +269,7 @@ export default function LocationPicker({ value, onChange, required = false }: Lo
             <SelectValue placeholder={loadingCounties ? "Loading counties..." : "Select county (optional)"} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">No county selected</SelectItem>
+            <SelectItem value="none">No county selected</SelectItem>
             {counties.map(county => (
               <SelectItem key={county.id} value={county.id}>
                 {county.name}
